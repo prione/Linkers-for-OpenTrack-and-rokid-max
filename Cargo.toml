@@ -1,0 +1,23 @@
+[package]
+name = "neckswitch"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0"
+cgmath = "0.18"
+hidapi = "2.6"
+bytemuck = "1.16"
+vqf-rs = { version = "0.2", features = ["f32", "motion-bias-estimation"] }
+
+[dependencies.windows]
+version = "0.57.0"
+features = [
+    "Win32_Foundation",
+    "Win32_UI_Shell",
+    "Win32_UI_WindowsAndMessaging",
+    "Win32_UI_Input_KeyboardAndMouse",
+    "Win32_Graphics_Dwm",
+    "Win32_System_LibraryLoader",
+    "Win32_Graphics_Gdi",
+]
