@@ -5,6 +5,7 @@ use neckswitch::{
     wrapper::{get_window_rect, load_filterd_window_handlers, move_window_pos},
     RokidMax,
 };
+use nenobi::array::TimeBaseEasingValueN;
 use windows::Win32::Foundation::{HWND, RECT};
 
 fn main() -> anyhow::Result<()> {
@@ -12,13 +13,13 @@ fn main() -> anyhow::Result<()> {
     // センサーの値をどれだけウインドウの移動に反映させるか
     let boost = 5000.0;
     // 何ピクセル前回と差があればウインドウの移動を開始するか
-    let threthold = 20.0;
+    let threthold = 100.0;
 
     let mut rects: Vec<(HWND, RECT)> = vec![];
-    let mut pre_q = rokid_max.quaternion();
-    let mut pre_x_gain = 0.0;
-    let mut pre_y_gain = 0.0;
+    let mut xy_gain = TimeBaseEasingValueN::new([0.0, 0.0]);
+    let mut pre_xy_gain = [0.0, 0.0];
     loop {
+        let [last_x_gain, last_y_gain] = xy_gain.last_value();
         {
             let new_handlers = load_filterd_window_handlers();
             // ウインドウが増えた場合は追加
@@ -34,8 +35,8 @@ fn main() -> anyhow::Result<()> {
                 let current_rect = get_window_rect(hwnd);
                 if current_rect.left != rect.left || current_rect.top != rect.top {
                     *rect = current_rect;
-                    rect.left += pre_x_gain.to_i32().unwrap();
-                    rect.top += pre_y_gain.to_i32().unwrap();
+                    rect.left += pre_xy_gain[0].to_i32().unwrap();
+                    rect.top += pre_xy_gain[1].to_i32().unwrap();
                 }
             });
         }
@@ -43,17 +44,23 @@ fn main() -> anyhow::Result<()> {
         let new_q = rokid_max.quaternion();
         let x_gain = new_q.v.y * boost;
         let y_gain = new_q.v.x * boost;
-        if (x_gain - pre_x_gain).abs() > threthold || (y_gain - pre_y_gain).abs() > threthold {
+        if (x_gain - last_x_gain).abs() > threthold || (y_gain - last_y_gain).abs() > threthold {
+            xy_gain.update(
+                [x_gain, y_gain],
+                Duration::from_millis(500),
+                nenobi::functions::quad_in_out,
+            );
+        }
+        {
+            let [current_x_gain, current_y_gain] = xy_gain.current_value();
             rects.iter().for_each(|(hwnd, rect)| {
                 move_window_pos(
                     hwnd,
-                    rect.left - x_gain.to_i32().unwrap(),
-                    rect.top - y_gain.to_i32().unwrap(),
+                    rect.left - current_x_gain.to_i32().unwrap(),
+                    rect.top - current_y_gain.to_i32().unwrap(),
                 );
             });
-            pre_x_gain = x_gain;
-            pre_y_gain = y_gain;
-            pre_q = new_q;
+            pre_xy_gain = [current_x_gain, current_y_gain];
         }
 
         thread::sleep(Duration::from_millis(10));

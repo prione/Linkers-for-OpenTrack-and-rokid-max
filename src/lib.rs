@@ -1,3 +1,4 @@
+pub mod smooth_rect;
 pub mod wrapper;
 
 use std::{

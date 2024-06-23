@@ -9,6 +9,7 @@ cgmath = "0.18"
 hidapi = "2.6"
 bytemuck = "1.16"
 vqf-rs = { version = "0.2", features = ["f32", "motion-bias-estimation"] }
+nenobi = { git = "https://github.com/mitoma/sandbox", branch = "main" }
 
 [dependencies.windows]
 version = "0.57.0"
