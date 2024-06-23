@@ -184,11 +184,3 @@ impl CombinedPacket {
         self.magnetometer
     }
 }
-
-pub fn window_titles() -> Vec<String> {
-    let handlers = wrapper::load_filterd_window_handlers();
-    handlers
-        .into_iter()
-        .flat_map(|hwnd| wrapper::get_window_title(&hwnd))
-        .collect()
-}
