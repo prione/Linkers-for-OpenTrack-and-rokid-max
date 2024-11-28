@@ -1,27 +1,17 @@
-# neckswitch
+# UDP tracker-for-rokid-max
 
-neckswitch は Windows のための Rokid Max 用 Window Switcher です。
-Switcher と言ってもまだウインドウを切り替えたりレイアウトする機能はありません。
+SteamVr runs on Rokid Max.
+On Windows, send Rokid Max gyro over UDP.
+By receiving the UDP with OpenTrack, SteamVR will work.
+- Port local:5000 → local:4242
 
-Rokid Max に搭載されている 3DoF センサーによって利用者の視点方向を検出し、なんとなく良い方向にウインドウを移動させます。
+## reference
+https://note.com/domtaro/n/nbdf732223dfc
 
-> [!WARNING]
-> このプログラムはまだ開発の初期段階です。
-> ウインドウがどこか画面の彼方に消えてしまう事があります。
-> 画面外に行ってしまったアプリケーションを再び見つけ出すには、アプリケーションを再起動する必要があるかもしれません。
-
-## 使い方
-
-本アプリケーションを動かすには Rust をインストールする必要があります。
-Rokid Max を接続した状態で本リポジトリをチェックアウトし、以下のコマンドを実行します。
-
-
+## Usage
 ```cmd
 cargo run
 ```
 
-終了は `Ctrl + C` で行います。
-
-## ライセンス
-
-MIT です。詳しくは [LICENSE](LICENSE) を参照してください。
+## License
+[LICENSE](LICENSE)
