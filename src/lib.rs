@@ -1,5 +1,3 @@
-pub mod wrapper;
-
 use std::{
     sync::{Arc, Mutex},
     thread,
